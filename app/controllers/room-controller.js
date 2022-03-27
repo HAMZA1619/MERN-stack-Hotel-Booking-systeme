@@ -20,7 +20,7 @@ async function get(req, res) {
 
 async function getAll(_, res) {
   try {
-    const room = await roomModel.find();
+    const room = await roomModel.find().populate({path:"hotel" , select: 'name'});
     res.send(room);
   } catch (error) {
     res.send(error);
@@ -29,12 +29,14 @@ async function getAll(_, res) {
 
 async function create(req, res) {
   try {
+    req.body.user = req.user.id;
     req.body.image = req.files.map((file) => {
       return file.filename;
     });
     const room = await roomModel.create(req.body);
-    res.send(room);
+    res.status(200).send(room);
   } catch (error) {
+    console.log(error.message)
     res.send(error);
   }
 }

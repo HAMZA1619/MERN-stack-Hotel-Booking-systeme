@@ -19,7 +19,7 @@ async function get(req, res) {
 
 async function getAll(_, res) {
   try {
-    const reserve = await reserveModel.find();
+    const reserve = await reserveModel.find().populate([{path:"client"},{path:"room",populate:{path:"hotel"}}]);
     res.send(reserve);
   } catch (error) {
     res.send(error);

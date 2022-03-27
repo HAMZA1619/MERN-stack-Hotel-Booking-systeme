@@ -17,16 +17,29 @@ function signup(req, res, next) {
     password: bcrypt.hashSync(req.body.password, 8),
   });
   user.save((err, user) => {
-    if (err) return next({ message: err });
-    res.json({ message: "User was registered successfully!", data: user });
+    if (err) return res.send({ message: err });
+    // res.json({ message: "User was registered successfully!", data: user });
+    const accessToken = jwt.sign(
+      {
+        id: user.id,
+        role: user.role,
+      },
+      config.JWT_SECRET
+    );
+
+    res.cookie("access", accessToken, {
+      secure: config.NODE_ENV == "development" ? false : true,
+      httpOnly: false,
+      sameSite: "lax",
+    }).status(200).send("you are logged in");
   });
 }
 
 async function signin(req, res, next) {
   userModel.findOne({ email: req.body.email }).exec(async (err, user) => {
-    if (err) return next({ message: err });
+    if (err) return res.send({ message: err });
 
-    if (!user) return next({ status: 404, message: "User Not found." });
+    if (!user) return res.send({ status: 404, message: "User Not found." });
 
     const passwordIsValid = bcrypt.compareSync(
       req.body.password,
@@ -34,7 +47,7 @@ async function signin(req, res, next) {
     );
 
     if (!passwordIsValid)
-      return next({
+      return res.send({
         status: 401,
         message: "Invalid Password!",
       });
@@ -49,29 +62,29 @@ async function signin(req, res, next) {
 
     res.cookie("access", accessToken, {
       secure: config.NODE_ENV == "development" ? false : true,
-      httpOnly: true,
+      httpOnly: false,
       sameSite: "lax",
-    });
+    }).status(200).send("you are logged in");
 
-    res.status(200).send({
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    });
+    // res.status(200).send({
+    //   id: user._id,
+    //   email: user.email,
+    //   role: user.role,
+    // });
   });
 }
 
 async function signout(req, res, next) {
-  const reqToken = req.cookies?.refresh;
+  // const reqToken = req.cookies?.refresh;
 
-  if (!reqToken)
-    return next({ status: 403, message: "Refresh Token is required!" });
+  // if (!reqToken)
+  //   return next({ status: 403, message: "Refresh Token is required!" });
 
   try {
     res.clearCookie("access");
-    res.status(200).send();
+    res.status(200).send("you are logged out");
   } catch (err) {
-    return next({ message: err });
+    return res.status(404).send({ message: err });
   }
 }
 

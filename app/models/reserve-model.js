@@ -20,8 +20,14 @@ const reserveSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
     },
-    date_from: Number,
-    date_to: Number,
+    date_from: {
+      type:Date,
+      required: true,
+    },
+    date_to: {
+      type:Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );

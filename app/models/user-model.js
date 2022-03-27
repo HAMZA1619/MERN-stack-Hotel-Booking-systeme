@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-  // name: {
-  //   type: String,
-  //   required: [true, "the name field is required"],
-  // },
+  name: {
+    type: String,
+    required: [true, "the name field is required"],
+  },
   email: {
     type: String,
     required: [true, "the email field is required"],

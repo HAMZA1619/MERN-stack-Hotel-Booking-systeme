@@ -64,7 +64,7 @@ async function remove(req, res) {
 }
 
 async function annonce(req, res) {
-  console.log("hello");
+  // console.log("hello");
   try {
     const hotel = await hotelModel.aggregate([
       {
