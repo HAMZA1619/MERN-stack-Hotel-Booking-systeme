@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+       frontend:
+           container_name: frontend
+           image: hotel-booking-frontend
+           restart: always
+           ports:
+             - "3000:3000"
+       backend:
+           container_name: backend
+           image: hotel-booking-backend
+           restart: always
+           ports:
+             - "4000:4000"
+           depends_on:
+             - mongo
+       mongo:
+          image: mongo # use the latest image.
+          container_name: mongo
+          restart: unless-stopped
+          ports:
+             - "27017:27017"
+

@@ -52,7 +52,7 @@ function Room({ role, userId }) {
         sethotels(response.data);
       }
     });
-  }, [role, userId,hotels]);
+  }, [role, userId]);
   useEffect(() => {
     API.get(`rooms`).then((res) => {
       if (role === "admin") {
